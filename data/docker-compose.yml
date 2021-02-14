@@ -1,0 +1,114 @@
+version: "2"
+x-redash-service: &redash-service
+  image: redash/redash:8.0.0.b32245
+  depends_on:
+    - postgres
+    - redis
+  env_file: /opt/redash/env
+  restart: always
+services:
+  server:
+    <<: *redash-service
+    command: server
+    ports:
+      - "5000:5000"
+    environment:
+      REDASH_WEB_WORKERS: 4
+  scheduler:
+    <<: *redash-service
+    command: scheduler
+    environment:
+      QUEUES: "celery"
+      WORKERS_COUNT: 1
+  scheduled_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "scheduled_queries,schemas"
+      WORKERS_COUNT: 1
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "queries"
+      WORKERS_COUNT: 2
+  redis:
+    image: redis:5.0-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+  postgres:
+    image: postgres:9.6-alpine
+    env_file: /opt/redash/env
+    volumes:
+      - /opt/redash/postgres-data:/var/lib/postgresql/data
+    restart: always
+  nginx:
+    image: redash/nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    links:
+      - server:redash
+    restart: always
+
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: django_app
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - rabbit
+
+  db:
+    image: yandex/clickhouse-server
+    ports:
+    - "8123:8123"
+    - "9000:9000"
+    - "9009:9009"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  rabbit:
+    image: rabbitmq:3-management    
+    container_name: rabbitmq 
+    ports:
+        - 5672:5672
+        - 15672:15672
+
+  celery:
+    build: .
+    container_name: 'app_celery'
+    command: celery -A lk worker -l INFO --pool=solo
+    volumes:
+      - .:/code
+    links:
+      - redis
+    depends_on:
+      - web
+      - db
+      - redis
+      - rabbit     
+
+  celerybeat:
+    build: .
+    container_name: 'app_celery_beat'
+    command: celery -A lk beat
+    volumes:
+      - .:/code
+    links:
+      - redis
+    depends_on:
+      - web
+      - db
+      - redis
+      - rabbit 

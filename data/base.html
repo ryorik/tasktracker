@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+
+    <title>Checkout example for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->    <!-- CSS only -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="form-validation.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">    
+    
+  </head>
+
+  <body class="bg-light text-center">
+
+    <div class="container">
+      <div class="py-5 text-center">        
+        <h2>Пользователи и задачи</h2>
+        <p class="lead">Приложение Django, для взаимодействия объектов-пользователей с объектами задачами.</p>
+      </div>
+
+      <div class="container">               
+        {% block content %}
+        {% endblock %}           
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    
+    <!-- JavaScript Bundle with Popper -->    
+    <script>
+      // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function() {
+        'use strict';
+
+        $('#bologna-list a').on('click', function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+
+        $('#user-list a').on('click', function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+
+        $(".action__button").on('click', function(event){
+          const target_id = $(this).data('target-id');
+          const id = $(this).data('id');
+          const user_id = $(this).data('user-id');
+
+          const data = {
+              "action": {         
+                  "action_id": id,
+                  "target_id": target_id,          
+                  "time": "2018-06-29T01:00",
+                  "user_id": user_id
+              }
+          };
+
+          console.log(data);
+
+          axios({
+            method: "post",
+            url: "/api/actions/",
+            headers: {
+              "X-CSRFToken": '{{ csrf_token }}',
+              'Content-Type': 'application/json',
+              },
+            data
+          })
+          .then(function (response) {
+            toastr.success(response.data.success);
+            console.log(response.data.success);
+          })
+          .catch(function (error) {
+            toastr.error(error);
+            console.log(error.response.data);
+          });
+        });    
+
+        $(".create-user__button").on('click', function(event){
+          const name = $(".user-name__input").val();
+          const email = $(".email__input").val();
+          const registration_date = $(".registration-date__input").val();
+
+          const data = {
+            "user": {         
+              "name": name,
+              "email": email,
+              "registration_date": registration_date
+            }
+          };
+
+          axios({
+            method: "post",
+            url: "/api/users/",
+            headers: {
+              "X-CSRFToken": '{{ csrf_token }}',
+              'Content-Type': 'application/json',
+              },
+            data
+          })
+          .then(function (response) {
+            toastr.success(response.data.success);
+            console.log(response.data.success);
+          })
+          .catch(function (error) {
+            toastr.error(error);
+            console.log(error.response.data);
+          });
+        }); 
+
+
+        window.addEventListener('load', function() {
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.getElementsByClassName('needs-validation');
+
+          // Loop over them and prevent submission
+          var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+              if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add('was-validated');
+            }, false);
+          });
+        }, false);
+      })();
+    </script>
+  </body>
+</html>

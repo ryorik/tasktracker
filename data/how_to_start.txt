@@ -1,0 +1,9 @@
+./v-env/Scripts/activate.bat
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+
+python manage.py runserver
+celery -A lk beat
+celery -A lk worker -l INFO --pool=solo

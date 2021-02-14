@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% csrf_token %}
+  <!-- <form method="post">
+  
+    {{ form }}
+    <button type="submit" class="btn btn-success">Сохранить пользователя</button>
+    <input type="datetime-local" id="r_date">
+  </form> -->
+
+  <div class="card mx-auto" style="width: 60rem;">
+    <div class="card-body">
+      <h5 class="card-title">Добавление пользователя</h5>
+      
+      <div class="container">      
+          <form class="needs-validation" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">Имя пользователя</label>
+                <input type="text" class="form-control user-name__input" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid first name is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Дата регистрации</label>
+                <input type="datetime-local" class="form-control registration-date__input" placeholder="" value="0001-01-01T00:00" required>
+                <div class="invalid-feedback">
+                  Valid last name is required.
+                </div>
+              </div>  
+            </div>
+  
+            <div class="mb-3">
+              <label for="email">Эл. почта пользователя</label>
+              <input type="email" class="form-control email__input" placeholder="you@example.com">
+              <div class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </div>
+            </div>
+  
+          
+            <hr class="mb-4">          
+          </form>
+          <button class="btn btn-primary btn-lg btn-block create-user__button">Создать</button>
+      </div>
+    </div>  
+    </div>
+
+
+    
+
+
+{% endblock %}
