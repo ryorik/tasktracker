@@ -22,7 +22,7 @@
 При первом разворачивании:
 1. Необходимо создать пользователя администратора Django. Для этого надо выполнить команды:
 ```shell
-cd data/lk
+cd data
 docker-compose build
 docker-compose run web python manage.py migrate
 docker-compose run web python manage.py createsuperuser
