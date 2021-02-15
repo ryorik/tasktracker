@@ -37,6 +37,14 @@ services:
     restart: always
     ports:
       - '6379:6379'
+  redisdjango:
+    hostname: redisdjango    
+    image: redis:5.0-alpine
+    command: --port 6380
+    ports:
+      - "6380:6380"
+    expose:
+      - "6380"
   postgres:
     image: postgres:9.6-alpine
     env_file: /opt/redash/env
