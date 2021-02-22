@@ -64,11 +64,8 @@ def clickhouse_import():
     ) ENGINE = Log""")
 
 
-
-    print(actionsFromQueue)
     for actionFromQueue in actionsFromQueue:
         action = json.loads(actionFromQueue)
-        print(action)
 
         client.execute(
             """INSERT INTO `tasktracker`.`events` (time, user_id, join_date, registration_date, name, email, is_guest, step_id, action_id)

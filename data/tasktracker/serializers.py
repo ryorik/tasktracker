@@ -9,8 +9,6 @@ class ActionSerializer(serializers.ModelSerializer):
     
 
     def create(self, validated_data):        
-        #action = Action.objects.create(target_id=1, **validated_data)
-        #return action
         return Action.objects.create(**validated_data) 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,7 +17,5 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
 
-    def create(self, validated_data):        
-        #action = Action.objects.create(target_id=1, **validated_data)
-        #return action
+    def create(self, validated_data):
         return User.objects.create(**validated_data) 

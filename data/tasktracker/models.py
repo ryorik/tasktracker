@@ -4,8 +4,6 @@ import pytz
 
 utc=pytz.UTC
 
-# Create your models here.
-
 class User(models.Model):
     join_date = models.DateTimeField(auto_now=True, verbose_name='Дата создания пользователя')
     registration_date = models.DateTimeField(auto_now=False, verbose_name='Дата регистрации пользователя')      
